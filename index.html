@@ -81,11 +81,45 @@
 
     </a-scene>
 	
-	<script>
-document.querySelector('#miEnlace1').addEventListener('click', function () {
-    window.location.href ='https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/';
-});
-		
+<script>
+let currentTransition = false;
+
+// 🔥 Fade overlay
+const fade = document.createElement('a-plane');
+fade.setAttribute('position', '0 0 -0.5');
+fade.setAttribute('width', '5');
+fade.setAttribute('height', '5');
+fade.setAttribute('material', 'color: black; opacity: 0');
+fade.setAttribute('class', 'fade');
+document.querySelector('a-scene').appendChild(fade);
+
+function fadeOutIn(callback) {
+  if (currentTransition) return;
+  currentTransition = true;
+
+  fade.setAttribute('animation', {
+    property: 'material.opacity',
+    to: 1,
+    dur: 300
+  });
+
+  setTimeout(() => {
+    callback();
+
+    fade.setAttribute('animation', {
+      property: 'material.opacity',
+      to: 0,
+      dur: 500
+    });
+
+    setTimeout(() => {
+      currentTransition = false;
+    }, 500);
+
+  }, 300);
+}
+
+// 🔥 SOLO efecto hover (sin salir de VR)
 function setupVRLink(id, url) {
   const el = document.querySelector(id);
 
@@ -97,14 +131,35 @@ function setupVRLink(id, url) {
     el.setAttribute('scale', '0.5 0.5 0.5');
   });
 
-  const go = () => window.location.href = url;
+  el.addEventListener('click', () => {
 
-  el.addEventListener('click', go);
+    fadeOutIn(() => {
+      // ✔ OPCIÓN SEGURA VR:
+      // abre en nueva pestaña SIN romper VR
+      window.open(url, '_blank');
+    });
 
+  });
 }
-  });		
 
-		
-		</script>
+// links
+setupVRLink('#miEnlace1',"https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/");
+
+
+// audio fix VR
+document.addEventListener('DOMContentLoaded', () => {
+  const resumeAudio = () => {
+    document.querySelectorAll('[sound]').forEach(e => {
+      const s = e.components.sound;
+      if (s) s.playSound();
+    });
+  };
+
+  window.addEventListener('click', resumeAudio);
+  window.addEventListener('triggerdown', resumeAudio);
+});
+</script>
+</body>
+</html>
 	</body>
 </html>
