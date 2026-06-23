@@ -22,22 +22,21 @@
       >
          <!-- Controlador mano derecha -->
       <a-entity
-        laser-controls="hand: right; model: true"
-        raycaster="objects: .clickable"
-        line="color: red; opacity: 0.8"
-         id="rightHand" 
-        oculus-touch-controls="hand: right; model: true"
-                >
-      </a-entity>
+  id="rightHand"
+  laser-controls="hand: right"
+  raycaster="objects: .clickable"
+  cursor="fuse: false; rayOrigin: entity"
+  oculus-touch-controls="hand: right">
+</a-entity>
 
       <!-- Controlador mano izquierda (opcional) -->
-      <a-entity
-        laser-controls="hand: left; model: true"
-        raycaster="objects: .clickable"
-        line="color: blue; opacity: 0.8"
-        id="leftHand" 
-        oculus-touch-controls="hand: left; model: true">
-      </a-entity>
+    <a-entity
+  id="leftHand"
+  laser-controls="hand: left"
+  raycaster="objects: .clickable"
+  cursor="fuse: false; rayOrigin: entity"
+  oculus-touch-controls="hand: left">
+</a-entity>
          
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
          </a-entity>
@@ -76,8 +75,22 @@
             <a-box id="cartel" src="image-12-768x432-1.png" color="#FFFFFF" visible="false" position="1 3 0" scale=" 0 4 8"></a-box>
         </a-box>
 		
-		<a-link id="miEnlace1" src="backrooms.jpg" href="https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/" title="Backrooms" position="19.26834 1.027 13.99184" scale="0.5 0.5 0.5" geometry="primitive: circle; segments: 64" material="shader: portal; side: double; previewDistance: 7.5" rotation="0 89.99999999999999 0"><a-entity text="align: center; color: white; font: kelsonsans; value: Backrooms; width: 5" position="0 1.5 0" rotation="0 180 0"></a-entity></a-link>
-	
+		<a-link id="miEnlace1"  
+			    class="clickable" 
+			    src="backrooms.jpg" 
+			    href="https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/" 
+			    title="Backrooms" position="19.26834 1.027 13.99184" 
+			    scale="0.5 0.5 0.5" 
+			    geometry="primitive: circle; segments: 64" 
+			    material="shader: portal; side: double; previewDistance: 7.5" 
+			    rotation="0 89.99999999999999 0">
+			<a-entity 
+			   text="align: center; color: white; font: kelsonsans; value: Backrooms; width: 5" 
+			   position="0 1.5 0" 
+			   rotation="0 180 0">
+		    </a-entity>
+		</a-link>
+
 
     </a-scene>
 	
@@ -143,23 +156,38 @@ function setupVRLink(id, url) {
 }
 
 // links
-setupVRLink('#miEnlace1',"https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/");
+function setupVRLink(id, url) {
+  const el = document.querySelector(id);
 
+  if (!el) return;
 
-// audio fix VR
-document.addEventListener('DOMContentLoaded', () => {
-  const resumeAudio = () => {
-    document.querySelectorAll('[sound]').forEach(e => {
-      const s = e.components.sound;
-      if (s) s.playSound();
-    });
-  };
+  // ✔ hover VR real (raycaster)
+  el.addEventListener('raycaster-intersected', () => {
+    el.setAttribute('scale', '0.7 0.7 0.7');
+  });
 
-  window.addEventListener('click', resumeAudio);
-  window.addEventListener('triggerdown', resumeAudio);
+  el.addEventListener('raycaster-intersected-cleared', () => {
+    el.setAttribute('scale', '0.5 0.5 0.5');
+  });
+
+  // ✔ click VR (trigger del controlador)
+  el.addEventListener('click', () => {
+    window.open(url, '_blank');
+  });
+}
+	setupVRLink('#miEnlace1',
+"https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/");
+
+	el.addEventListener('click', () => {
+  el.setAttribute('animation__click', {
+    property: 'scale',
+    to: '0.4 0.4 0.4',
+    dur: 100,
+    dir: 'alternate'
+  });
+
+  window.open(url, '_blank');
 });
 </script>
 </body>
-</html>
-	</body>
 </html>
