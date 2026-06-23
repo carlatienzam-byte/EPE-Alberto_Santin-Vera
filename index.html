@@ -156,37 +156,20 @@ function setupVRLink(id, url) {
 }
 
 // links
-function setupVRLink(id, url) {
-  const el = document.querySelector(id);
+setupVRLink('#miEnlace1','https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/');
 
-  if (!el) return;
 
-  // ✔ hover VR real (raycaster)
-  el.addEventListener('raycaster-intersected', () => {
-    el.setAttribute('scale', '0.7 0.7 0.7');
-  });
+// audio fix VR
+document.addEventListener('DOMContentLoaded', () => {
+  const resumeAudio = () => {
+    document.querySelectorAll('[sound]').forEach(e => {
+      const s = e.components.sound;
+      if (s) s.playSound();
+    });
+  };
 
-  el.addEventListener('raycaster-intersected-cleared', () => {
-    el.setAttribute('scale', '0.5 0.5 0.5');
-  });
-
-  // ✔ click VR (trigger del controlador)
-  el.addEventListener('click', () => {
-    window.open(url, '_blank');
-  });
-}
-	setupVRLink('#miEnlace1',
-"https://carlatienzam-byte.github.io/EPE-IESCarmen-de-Burgos/");
-
-	el.addEventListener('click', () => {
-  el.setAttribute('animation__click', {
-    property: 'scale',
-    to: '0.4 0.4 0.4',
-    dur: 100,
-    dir: 'alternate'
-  });
-
-  window.open(url, '_blank');
+  window.addEventListener('click', resumeAudio);
+  window.addEventListener('triggerdown', resumeAudio);
 });
 </script>
 </body>
